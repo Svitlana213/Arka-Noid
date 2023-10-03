@@ -1,26 +1,23 @@
-.grid {
+.grid{
     position: absolute;
     width: 560px;
     height: 300px;
     border: solid 1px black;
-    margin-top: 80px;
+    margin-top: 80px ;
 }
-
-.block {
+.block{
     position: absolute;
     width: 100px;
     height: 20px;
     background-color: blue;
 }
-
 .user {
     position: absolute;
     width: 100px;
     height: 20px;
     background-color: purple;
 }
-
-.ball {
+.ball{
     position: absolute;
     width: 20px;
     height: 20px;
