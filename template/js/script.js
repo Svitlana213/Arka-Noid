@@ -2,72 +2,96 @@ const grid = document.querySelector('.grid')
 const allblocks_div = document.querySelector('.allblocks')
 const scoreDisplay = document.querySelector('#score')
 const live = document.querySelector('#lives')
+const timeStart = document.querySelector('#timer')
+const level = document.querySelector('#level')
+
 const blockWidth = 100
 const blockHeight = 20
+const padleWidth = 90
 const ballDiameter = 20
 const boardWidth = 560
-const boardHeight = 300
+const boardHeight = 460
+
 let isPaused = false
-let lives = 3
-let game_over = false
-let game_reset = true
 let game_start = false
+let game_reset = true
+let game_over = false
 let left = false
 let right = false
+// let startTimer = true
 
 let timerId
-let xDirection = -2
-let yDirection = 2
+let xDirection = -3
+let yDirection = 3
+let lives = 3
 let score = 0
+let time = 0
+let interval
+let currentLevel = 0
+let maxLevel = 2
 
 const userStart = [230, 10]
 let currentPosition = userStart
 
-const ballStart = [270, 40]
+const ballStart = [265, 40]
 let ballCurrentPosition = ballStart
 
-//create Block
 class Block {
-    //metric system for the blocks
     constructor(x, y) {
-        this.bottomLeft = [x, y]
-        this.bottomRight = [x + blockWidth, y]
-        this.topLeft = [x, y + blockHeight]
-        this.topRight = [x + blockWidth, y + blockHeight]
+        this.bottomLeft = [x * (blockWidth + 9) + 9, y * (blockHeight + 7) + 210]
+        this.bottomRight = [x * (blockWidth + 9) + 9 + blockWidth, y * (blockHeight + 7) + 210]
+        this.topLeft = [x * (blockWidth + 9) + 9, y * blockHeight + 210 + (blockHeight + 7)]
+        this.topRight = [x * (blockWidth + 9) + 9 + blockWidth, y * (blockHeight + 7) + 210 + blockHeight]
+
     }
 }
 
-//all blocks
 const blocks = [
-    new Block(10, 270),
-    new Block(120, 270),
-    new Block(230, 270),
-    new Block(340, 270),
-    new Block(450, 270),
-    new Block(10, 240),
-    new Block(120, 240),
-    new Block(230, 240),
-    new Block(340, 240),
-    new Block(450, 240),
-    new Block(10, 210),
-    new Block(120, 210),
-    new Block(230, 210),
-    new Block(340, 210),
-    new Block(450, 210),
+    [
+        new Block(1, 8)
+    ],
+    [
+        new Block(1, 8),
+        new Block(1, 7),
+
+        new Block(2, 8),
+        new Block(2, 7),
+        new Block(2, 6),
+
+        new Block(3, 8),
+        new Block(3, 7),
+    ],
+    [
+        new Block(0, 8),
+        new Block(0, 7),
+        new Block(0, 6),
+        new Block(0, 5),
+
+        new Block(2, 8),
+        new Block(2, 7),
+        new Block(2, 6),
+
+        new Block(3, 8),
+        new Block(3, 6),
+
+        new Block(4, 8),
+        new Block(4, 7),
+
+    ]
 ]
 
-//draw a blockdocument.querySelector('#reset').onclick = function(){
-
+//draw a block
 function addBlocks() {
-    for (let i = 0; i < blocks.length; i++) {
+    for (let i = 0; i < blocks[currentLevel].length; i++) {
         const block = document.createElement('div')
         block.classList.add('block')
-        block.style.left = blocks[i].bottomLeft[0] + 'px'
-        block.style.bottom = blocks[i].bottomLeft[1] + 'px'
+        block.style.left = blocks[currentLevel][i].bottomLeft[0] + 'px'
+        block.style.bottom = blocks[currentLevel][i].bottomLeft[1] + 'px'
         allblocks_div.appendChild(block)
     }
 }
 addBlocks()
+
 
 //add user
 const user = document.createElement('div')
@@ -95,20 +119,23 @@ function moveUser() {
         }
     }
     if (right == true) {
-        if (currentPosition[0] < boardWidth - blockWidth) {
+        if (currentPosition[0] < boardWidth - padleWidth - 1) {
             currentPosition[0] += 10
         }
     }
     drawUser()
 }
+
 document.addEventListener('keydown', function (event) {
     if (event.key === 'ArrowLeft') {
         left = true
     } else if (event.key == 'ArrowRight') {
         right = true
     }
-    if (event.key === ' ') {
+    if (event.key === ' ' && game_start === false) {
         game_start = true
+        game_over = false
+        startTime()
     }
 })
 
@@ -136,16 +163,17 @@ function moveBall() {
 }
 
 function frameAnimation() {
-
     requestAnimationFrame(frameAnimation)
 
-    if (game_over == false) {
-        if (isPaused == false) {
-            moveBall()
-            moveUser()
+    if (game_start == true) {
+        if (game_over == false) {
+            if (isPaused == false) {
+                moveBall()
+                moveUser()
+                // hideButton()
+            }
         }
     }
-
     if (game_over == true) {
         document.querySelector('#pause').disabled = true
     }
@@ -154,39 +182,117 @@ function frameAnimation() {
 let animationId = requestAnimationFrame(frameAnimation)
 
 document.querySelector('#pause').onclick = function () {
-    if (isPaused == false) {
+    isPaused = !isPaused // isPaused = true змінюємо значення змінної
+    if (isPaused == true) {
         pause.innerHTML = "Continue"
-    } else {
+        stopTime()
+        console.log(isPaused)
+
+    } else if (isPaused == false) {
         pause.innerHTML = "Pause"
+        startTime()
+        console.log(isPaused)
     }
-    isPaused = !isPaused // isPaused = true
 }
 
 document.querySelector('#reset').onclick = function () {
     window.document.location.reload()
 }
 
+function startTime() {
+    interval = setInterval(updateTime, 1000)
+    console.log("startTime")
+    console.log(interval)
+}
+
+function updateTime() {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    timeStart.innerHTML = 'Time: ' + `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`
+    time++
+}
+
+function stopTime() {
+    clearInterval(interval)
+    console.log("stop")
+    console.log(interval)
+}
+
+// function showButton(){
+//     const nextLevel = document.querySelector('#next_level')
+//     nextLevel.classList.remove("hidden")
+// }
+
+// function hideButton(){
+//     const nextLevel = document.querySelector('#next_level')
+//     nextLevel.classList.add("hidden")
+// }
+
+// function newLevel(){
+//     let isLevelDone = true
+//     for (let i = 0; i < blocks.length; i++){
+//         isLevelDone = isLevelDone
+//     }
+//     if (isLevelDone){
+//         if(currentLevel >= maxLevel){
+//             game_over = true
+//             return
+//         }
+//     }
+//     currentLevel++ 
+//     // hideButton()
+// }
+
 //check for collisios
 function checkCollisions() {
     //check for block collisions
-    for (let i = 0; i < blocks.length; i++) {
-        if (
-            (ballCurrentPosition[0] > blocks[i].bottomLeft[0] && ballCurrentPosition[0] < blocks[i].bottomRight[0] && ((ballCurrentPosition[1] + ballDiameter) > blocks[i].bottomLeft[1] && ballCurrentPosition[1] < blocks[i].topLeft[1])
-            )
-        ) {
-            const allBlocks = Array.from(document.querySelectorAll('.block'))
-            allBlocks[i].classList.remove('block')
-            blocks.splice(i, 1)
-            changeDirection()
-            score++
-            scoreDisplay.innerHTML = 'Score: ' + score
+    for (let i = 0; i < blocks[currentLevel].length; i++) {
+        const block = blocks[currentLevel][i];
+        const { bottomLeft, bottomRight, topLeft, topRight } = block;
+        const ballCenterX = ballCurrentPosition[0] + ballDiameter / 2;
+        const ballCenterY = ballCurrentPosition[1] + ballDiameter / 2;
 
-            //check for win
-            if (blocks.length === 0) {
+        if (
+            ballCenterX >= bottomLeft[0] &&
+            ballCenterX <= bottomRight[0] &&
+            ballCurrentPosition[1] <= bottomLeft[1] &&
+            ballCurrentPosition[1] + ballDiameter >= topLeft[1]
+        ) {
+            // Collided with the block from the top or bottom
+            yDirection *= -1;
+            block.hit = true; // Add a property to the block object to keep track if it has been hit
+        }
+
+        if (
+            ballCenterY >= topLeft[1] &&
+            ballCenterY <= bottomLeft[1] &&
+            ballCurrentPosition[0] + ballDiameter >= topLeft[0] &&
+            ballCurrentPosition[0] <= topRight[0]
+        ) {
+            // Collided with the block from the left or right
+            xDirection *= -1;
+            block.hit = true; // Add a property to the block object to keep track if it has been hit
+        }
+
+        if (block.hit) {
+            // If the block was hit, remove it from the array and update the score
+            const allBlocks = document.querySelectorAll('.block');
+            allBlocks[i].classList.remove('block');
+            blocks[currentLevel].splice(i, 1);
+            score++;
+            scoreDisplay.innerHTML = 'Score: ' + score;
+
+            // next level
+            if (blocks[currentLevel].length === 0) {
                 game_over = true
-                scoreDisplay.innerHTML = 'You win. Your score: ' + score
-                document.removeEventListener('keydown', moveUser)
-                return
+                game_start = false
+                // scoreDisplay.innerHTML = 'You win. Your score: ' + score;
+                currentLevel++
+                addBlocks()
+                // showButton()
+                document.removeEventListener('keydown', moveUser);
+                stopTime();
+                return;
             }
         }
     }
@@ -203,45 +309,43 @@ function checkCollisions() {
         changeDirection()
     }
 
-
     //check for game over
     if (ballCurrentPosition[1] <= 0) {
         clearInterval(timerId)
         lives--
-        xDirection = -2
-        yDirection = 2
+        xDirection = -3
+        yDirection = 3
         cancelAnimationFrame(animationId)
         if (lives >= 0) {
             live.innerHTML = 'Lives: ' + lives
-            // animationId = requestAnimationFrame(checkCollisions);
         }
         if (lives == 0) {
             game_over = true
             scoreDisplay.innerHTML = "Game over. Your score: " + score
             document.removeEventListener('keydown', moveUser)
+            stopTime()
+            // showButton()
             return
         }
     }
 
 }
-
-
 //change direction
 function changeDirection() {
-    if (xDirection === 2 && yDirection === 2) {
-        yDirection = -2
+    if (xDirection === 3 && yDirection === 3) {
+        yDirection = -3
         return
     }
-    if (xDirection === 2 && yDirection === -2) {
-        xDirection = -2
+    if (xDirection === 3 && yDirection === -3) {
+        xDirection = -3
         return
     }
-    if (xDirection === -2 && yDirection === -2) {
-        yDirection = 2
+    if (xDirection === -3 && yDirection === -3) {
+        yDirection = 3
         return
     }
-    if (xDirection === -2 && yDirection === 2) {
-        xDirection = 2
+    if (xDirection === -3 && yDirection === 3) {
+        xDirection = 3
         return
     }
 

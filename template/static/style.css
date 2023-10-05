@@ -1,26 +1,78 @@
-.grid{
+body {
+    background: linear-gradient(rgba(17, 16, 16, 0.3), rgba(17, 16, 16, 0.3)), url("./photos/bg.jpg") no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+    background-size: cover;
+    color: aliceblue;
+    font-family: 'ArcadeClassic', sans-serif;
+    font-size: 30px;
+
+}
+
+.game {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.grid {
     position: absolute;
     width: 560px;
-    height: 300px;
-    border: solid 1px black;
-    margin-top: 80px ;
+    height: 460px;
+    margin-top: 180px;
+    border: solid 1px white;
 }
-.block{
+
+.block {
     position: absolute;
     width: 100px;
     height: 20px;
-    background-color: blue;
+    background-color: rgb(34, 4, 117);
+    border: solid 1px rgb(223, 223, 223);
 }
+
 .user {
     position: absolute;
-    width: 100px;
+    width: 90px;
     height: 20px;
-    background-color: purple;
+    background-color: rgb(141, 7, 194);
+    outline: solid 1px rgb(223, 223, 223);
 }
-.ball{
+
+.ball {
     position: absolute;
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    background-color: black;
+    background-color: rgb(23, 103, 224);
+    border: solid 1px rgb(223, 223, 223);
+}
+
+.game_info,
+.buttons {
+    margin: 20px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+#lives,
+#score,
+#timer,
+#pause,
+#reset,
+#level {
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+#pause,
+#reset {
+    background-color: rgb(6, 3, 46);
+    color: white;
+    width: 120px;
+    height: 50px;
+    font-family: 'ArcadeClassic', sans-serif;
+    font-size: 20px;
+    border: solid 1px white;
 }

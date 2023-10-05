@@ -9,16 +9,24 @@
 </head>
 
 <body>
-    <div id="score">Score: 0</div>
-    <div id="lives">Lives: 3</div>
-    <div class="grid">
-        <div class="allblocks"></div>
+    <div class="game_info">
+        <div id="lives">Lives: 3</div>
+        <div id="score">Score: 0</div>
+        <div id="timer">Time: 00:00</div>
+        <div id="level">Level: 1</div>
     </div>
-    <button id="pause">Pause</button>
-    <button id="reset">Reset</button>
-    <script src="script.js"></script>
-    <div id="timer"></div>
-    <div id="lives"></div>
+
+    <div class="game">
+        <div class="grid">
+            <div class="allblocks"></div>
+            <!-- <button id="next_level" class="hidden">Next level</button> -->
+        </div>
+    </div>
+
+    <div class="buttons">
+        <button id="pause">Pause</button>
+        <button id="reset">Reset</button>
+    </div>
 
     <script src="/template/js/script.js"></script>
 </body>
