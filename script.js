@@ -11,6 +11,9 @@ let isPaused = false
 let lives = 3
 let game_over = false
 let game_reset = true
+let game_start = false
+let left = false
+let right = false
 
 let timerId
 let xDirection = -2
@@ -85,24 +88,37 @@ function drawBall() {
 }
 
 //move user
-function moveUser(event) {
-    switch (event.key) {
-        case 'ArrowLeft':
-            if (currentPosition[0] > 0) {
-                currentPosition[0] -= 10
-                drawUser()
-            }
-            break;
-        case 'ArrowRight':
-            if (currentPosition[0] < boardWidth - blockWidth) {
-                currentPosition[0] += 10
-                drawUser()
-            }
-            break;
+function moveUser() {
+    if (left == true) {
+        if (currentPosition[0] > 0) {
+            currentPosition[0] -= 10
+        }
     }
+    if (right == true) {
+        if (currentPosition[0] < boardWidth - blockWidth) {
+            currentPosition[0] += 10
+        }
+    }
+    drawUser()
 }
+document.addEventListener('keydown', function (event) {
+    if (event.key === 'ArrowLeft') {
+        left = true
+    } else if (event.key == 'ArrowRight') {
+        right = true
+    }
+    if (event.key === ' ') {
+        game_start = true
+    }
+})
 
-document.addEventListener('keydown', moveUser)
+document.addEventListener('keyup', function (event) {
+    if (event.key === 'ArrowLeft') {
+        left = false
+    } else if (event.key == 'ArrowRight') {
+        right = false
+    }
+})
 
 //add ball
 const ball = document.createElement('ball')
@@ -111,12 +127,13 @@ drawBall()
 grid.appendChild(ball)
 
 function moveBall() {
-    ballCurrentPosition[0] += xDirection
-    ballCurrentPosition[1] += yDirection
-    drawBall()
-    checkCollisions()
+    if (game_start == true) {
+        ballCurrentPosition[0] += xDirection
+        ballCurrentPosition[1] += yDirection
+        drawBall()
+        checkCollisions()
+    }
 }
-// timerId = setInterval(moveBall, 20)
 
 function frameAnimation() {
 
@@ -125,6 +142,7 @@ function frameAnimation() {
     if (game_over == false) {
         if (isPaused == false) {
             moveBall()
+            moveUser()
         }
     }
 
@@ -137,31 +155,15 @@ let animationId = requestAnimationFrame(frameAnimation)
 
 document.querySelector('#pause').onclick = function () {
     if (isPaused == false) {
-        pause.innerHTML = "continue"
+        pause.innerHTML = "Continue"
     } else {
-        pause.innerHTML = "pause"
+        pause.innerHTML = "Pause"
     }
     isPaused = !isPaused // isPaused = true
 }
 
 document.querySelector('#reset').onclick = function () {
-    let allblocks = Array.from(allblocks_div.querySelectorAll('div'))
-    if (game_reset == true) {
-        xDirection
-        yDirection
-        for (let i = 0; i < allblocks.length; i++) {
-            allblocks[i].classList.add('block')
-        }
-        // console.log(allblocks_div.querySelectorAll('div'))
-        console.log(Array.from(allblocks_div.querySelectorAll('div')))
-
-        // allBlocks[i].classList.remove('block')
-        // addBlocks[i].classList.add('grid')
-        console.log(allblocks_div)
-        console.log(blocks)
-        drawUser()
-
-    }
+    window.document.location.reload()
 }
 
 //check for collisios
@@ -181,8 +183,8 @@ function checkCollisions() {
 
             //check for win
             if (blocks.length === 0) {
-                scoreDisplay.innerHTML = 'u win'
-                clearAnimationFrame(animationId)
+                game_over = true
+                scoreDisplay.innerHTML = 'You win. Your score: ' + score
                 document.removeEventListener('keydown', moveUser)
                 return
             }
@@ -215,7 +217,7 @@ function checkCollisions() {
         }
         if (lives == 0) {
             game_over = true
-            scoreDisplay.innerHTML = "Game over"
+            scoreDisplay.innerHTML = "Game over. Your score: " + score
             document.removeEventListener('keydown', moveUser)
             return
         }
