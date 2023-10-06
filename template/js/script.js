@@ -18,7 +18,6 @@ let game_reset = true
 let game_over = false
 let left = false
 let right = false
-// let startTimer = true
 
 let timerId
 let xDirection = -3
@@ -170,12 +169,13 @@ function frameAnimation() {
             if (isPaused == false) {
                 moveBall()
                 moveUser()
-                // hideButton()
             }
         }
     }
-    if (game_over == true) {
+    if (game_start == false) {
         document.querySelector('#pause').disabled = true
+    } else {
+        document.querySelector('#pause').disabled = false
     }
 }
 
@@ -217,31 +217,6 @@ function stopTime() {
     console.log("stop")
     console.log(interval)
 }
-
-// function showButton(){
-//     const nextLevel = document.querySelector('#next_level')
-//     nextLevel.classList.remove("hidden")
-// }
-
-// function hideButton(){
-//     const nextLevel = document.querySelector('#next_level')
-//     nextLevel.classList.add("hidden")
-// }
-
-// function newLevel(){
-//     let isLevelDone = true
-//     for (let i = 0; i < blocks.length; i++){
-//         isLevelDone = isLevelDone
-//     }
-//     if (isLevelDone){
-//         if(currentLevel >= maxLevel){
-//             game_over = true
-//             return
-//         }
-//     }
-//     currentLevel++ 
-//     // hideButton()
-// }
 
 //check for collisios
 function checkCollisions() {
@@ -286,10 +261,26 @@ function checkCollisions() {
             if (blocks[currentLevel].length === 0) {
                 game_over = true
                 game_start = false
-                // scoreDisplay.innerHTML = 'You win. Your score: ' + score;
+
                 currentLevel++
-                addBlocks()
-                // showButton()
+                // console.log(currentLevel)
+                // console.log(blocks.length)
+                if (currentLevel + 1 > blocks.length) {
+                    game_over = true
+                    console.log("456789")
+                    scoreDisplay.innerHTML = 'You win. Your score: ' + score;
+                    stopTime()
+                    return
+                } else {
+                    level.innerHTML = 'Level: ' + (currentLevel + 1)
+                    addBlocks()
+                    ballCurrentPosition = [265, 40]
+                    currentPosition = [230, 10]
+                    // console.log(ballStart)
+                    // console.log(currentPosition)
+                    drawBall()
+                    drawUser()
+                }
                 document.removeEventListener('keydown', moveUser);
                 stopTime();
                 return;
@@ -324,7 +315,6 @@ function checkCollisions() {
             scoreDisplay.innerHTML = "Game over. Your score: " + score
             document.removeEventListener('keydown', moveUser)
             stopTime()
-            // showButton()
             return
         }
     }
