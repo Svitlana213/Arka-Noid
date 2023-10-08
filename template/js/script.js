@@ -8,6 +8,7 @@ const level = document.querySelector('#level')
 const blockWidth = 100
 const blockHeight = 20
 const padleWidth = 90
+const padleHeight = 20
 const ballDiameter = 20
 const boardWidth = 560
 const boardHeight = 460
@@ -29,11 +30,11 @@ let interval
 let currentLevel = 0
 let maxLevel = 2
 
-const userStart = [230, 10]
-let currentPosition = userStart
+const userStart = [(boardWidth / 2) - (padleWidth / 2) + 5, boardHeight - (boardHeight - 10)]
+let currentPosition = [...userStart]
 
-const ballStart = [265, 40]
-let ballCurrentPosition = ballStart
+const ballStart = [(boardWidth / 2) - (ballDiameter / 2) + 5, boardHeight - (boardHeight - 40)]
+let ballCurrentPosition = [...ballStart]
 
 class Block {
     constructor(x, y) {
@@ -118,7 +119,7 @@ function moveUser() {
         }
     }
     if (right == true) {
-        if (currentPosition[0] < boardWidth - padleWidth - 1) {
+        if (currentPosition[0] < boardWidth - padleWidth) {
             currentPosition[0] += 10
         }
     }
@@ -135,6 +136,7 @@ document.addEventListener('keydown', function (event) {
         game_start = true
         game_over = false
         startTime()
+        document.querySelector('#pause').disabled = false
     }
 })
 
@@ -172,10 +174,8 @@ function frameAnimation() {
             }
         }
     }
-    if (game_start == false) {
+    if (game_over == true) {
         document.querySelector('#pause').disabled = true
-    } else {
-        document.querySelector('#pause').disabled = false
     }
 }
 
@@ -223,29 +223,17 @@ function checkCollisions() {
     //check for block collisions
     for (let i = 0; i < blocks[currentLevel].length; i++) {
         const block = blocks[currentLevel][i];
-        const { bottomLeft, bottomRight, topLeft, topRight } = block;
-        const ballCenterX = ballCurrentPosition[0] + ballDiameter / 2;
-        const ballCenterY = ballCurrentPosition[1] + ballDiameter / 2;
+        const { bottomLeft, topLeft, topRight } = block;
 
         if (
-            ballCenterX >= bottomLeft[0] &&
-            ballCenterX <= bottomRight[0] &&
-            ballCurrentPosition[1] <= bottomLeft[1] &&
-            ballCurrentPosition[1] + ballDiameter >= topLeft[1]
-        ) {
-            // Collided with the block from the top or bottom
-            yDirection *= -1;
-            block.hit = true; // Add a property to the block object to keep track if it has been hit
-        }
-
-        if (
-            ballCenterY >= topLeft[1] &&
-            ballCenterY <= bottomLeft[1] &&
+            ballCurrentPosition[1] <= topRight[1] &&
+            ballCurrentPosition[1] + ballDiameter >= bottomLeft[1] &&
             ballCurrentPosition[0] + ballDiameter >= topLeft[0] &&
             ballCurrentPosition[0] <= topRight[0]
         ) {
             // Collided with the block from the left or right
-            xDirection *= -1;
+            xDirection = -xDirection;
+            yDirection = -yDirection;
             block.hit = true; // Add a property to the block object to keep track if it has been hit
         }
 
@@ -274,8 +262,8 @@ function checkCollisions() {
                 } else {
                     level.innerHTML = 'Level: ' + (currentLevel + 1)
                     addBlocks()
-                    ballCurrentPosition = [265, 40]
-                    currentPosition = [230, 10]
+                    currentPosition = [...userStart]
+                    ballCurrentPosition = [...ballStart]
                     // console.log(ballStart)
                     // console.log(currentPosition)
                     drawBall()
@@ -289,21 +277,29 @@ function checkCollisions() {
     }
 
     //check for wall collisions
-    if (ballCurrentPosition[0] >= (boardWidth - ballDiameter) || ballCurrentPosition[1] >= (boardHeight - ballDiameter) || ballCurrentPosition[0] <= 0) {
-        changeDirection()
+    if (ballCurrentPosition[0] >= (boardWidth - ballDiameter) || ballCurrentPosition[0] <= 0) {
+        xDirection = -xDirection; // Invert ball's horizontal direction
+    }
+    if (ballCurrentPosition[1] >= (boardHeight - ballDiameter)) {
+        ballCurrentPosition[1] = boardHeight - ballDiameter
+        yDirection = -yDirection; // Invert ball's vertical direction
     }
 
     //check for user collisions
     if (
-        (ballCurrentPosition[0] > currentPosition[0] && ballCurrentPosition[0] < currentPosition[0] + blockWidth) && (ballCurrentPosition[1] > currentPosition[1] && ballCurrentPosition[1] < currentPosition[1] + blockHeight)
+        (ballCurrentPosition[0] + ballDiameter >= currentPosition[0] && ballCurrentPosition[0] <= currentPosition[0] + blockWidth) &&
+        (ballCurrentPosition[1] + ballDiameter >= currentPosition[1] && ballCurrentPosition[1] <= currentPosition[1] + blockHeight)
     ) {
-        changeDirection()
+        ballCurrentPosition[1] = currentPosition[1] + padleHeight
+        yDirection = -yDirection
     }
 
     //check for game over
     if (ballCurrentPosition[1] <= 0) {
         clearInterval(timerId)
         lives--
+        currentPosition = [...userStart]
+        ballCurrentPosition = [...ballStart]
         xDirection = -3
         yDirection = 3
         cancelAnimationFrame(animationId)
@@ -322,16 +318,16 @@ function checkCollisions() {
 }
 //change direction
 function changeDirection() {
+    if (xDirection === -3 && yDirection === -3) {
+        yDirection = 3
+        return
+    }
     if (xDirection === 3 && yDirection === 3) {
         yDirection = -3
         return
     }
     if (xDirection === 3 && yDirection === -3) {
         xDirection = -3
-        return
-    }
-    if (xDirection === -3 && yDirection === -3) {
-        yDirection = 3
         return
     }
     if (xDirection === -3 && yDirection === 3) {
