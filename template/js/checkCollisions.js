@@ -8,6 +8,7 @@ import { stopGame } from "./time.js"
 const scoreDisplay = document.querySelector('#score')
 const live = document.querySelector('#lives')
 const level = document.querySelector('#level')
+const pausebtn = document.getElementById('pause')
 
 export function checkCollisions() {
     //check for block collisions
@@ -21,7 +22,6 @@ export function checkCollisions() {
             position.ballCurrentPosition[0] <= topRight[0]
         ) {
             // Collided with the block from the top or bottom
-            variables.xDirection = -variables.xDirection
             variables.yDirection = -variables.yDirection
             block.hit = true; // Add a property to the block object to keep track if it has been hit
         }
@@ -41,6 +41,7 @@ export function checkCollisions() {
                     variables.game_over = true
                     variables.game_start = false
                     scoreDisplay.innerHTML = 'You win. Your score: ' + variables.score
+                    pausebtn.hidden = true
                     return
                 } else {
                     level.innerHTML = 'Level: ' + (variables.currentLevel + 1)
@@ -88,7 +89,7 @@ export function checkCollisions() {
             variables.game_over = true
             scoreDisplay.innerHTML = "Game over. Your score: " + variables.score
             document.removeEventListener('keydown', moveUser)
-            // stopTime()
+            pausebtn.hidden = true
             return
         }
     }

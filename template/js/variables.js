@@ -9,7 +9,6 @@ export const variables = {
 
     isPaused: false,
     game_start: false,
-    // game_reset: true,
     game_over: false,
     left: false,
     right: false,
