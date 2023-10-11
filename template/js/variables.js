@@ -9,7 +9,7 @@ export const variables = {
 
     isPaused: false,
     game_start: false,
-    game_reset: true,
+    // game_reset: true,
     game_over: false,
     left: false,
     right: false,
@@ -23,6 +23,15 @@ export const variables = {
     interval: 0,
     currentLevel: 0,
 
-    currentPosition: [...userStart],
-    ballCurrentPosition: [...ballStart],
+    get userStart() {
+        return [(this.boardWidth / 2) - (this.padleWidth / 2) + 5, this.boardHeight - (this.boardHeight - 10)]
+    },
+    get ballStart() {
+        return [(this.boardWidth / 2) - (this.ballDiameter / 2) + 5, this.boardHeight - (this.boardHeight - 40)]
+    }
+}
+
+export const position = {
+    currentPosition: [...variables.userStart],
+    ballCurrentPosition: [...variables.ballStart]
 }

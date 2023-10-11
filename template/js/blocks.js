@@ -12,7 +12,20 @@ class Block {
 }
 export const blocks = [
     [
-        new Block(1, 8)
+        new Block(1, 8),
+        new Block(3, 8),
+        new Block(1, 7),
+        new Block(3, 7),
+        new Block(1, 6),
+        new Block(3, 6),
+        new Block(0, 2),
+        new Block(1, 1),
+        new Block(2, 1),
+        new Block(3, 1),
+        new Block(4, 2),
+    ],
+    [
+        new Block(1, 8),
     ],
     [
         new Block(1, 8),

@@ -1,7 +1,8 @@
 import { variables } from "./variables.js"
 import { grid } from "./ball.js"
+import { variables, position } from "./variables.js"
 
-// export let currentPosition = [...userStart]
+export const grid = document.querySelector('.grid')
 
 //add user
 const user = document.createElement('div')
@@ -11,20 +12,20 @@ grid.appendChild(user)
 
 //draw the user
 export function drawUser() {
-    user.style.left = variables.currentPosition[0] + 'px'
-    user.style.bottom = variables.currentPosition[1] + 'px'
+    user.style.left = position.currentPosition[0] + 'px'
+    user.style.bottom = position.currentPosition[1] + 'px'
 }
 
 //move user
 export function moveUser() {
     if (variables.left == true) {
-        if (variables.currentPosition[0] > 0) {
-            variables.currentPosition[0] -= 10
+        if (position.currentPosition[0] > 0) {
+            position.currentPosition[0] -= 10
         }
     }
     if (variables.right == true) {
-        if (variables.currentPosition[0] < variables.boardWidth - variables.padleWidth) {
-            variables.currentPosition[0] += 10
+        if (position.currentPosition[0] < variables.boardWidth - variables.padleWidth) {
+            position.currentPosition[0] += 10
         }
     }
     drawUser()
