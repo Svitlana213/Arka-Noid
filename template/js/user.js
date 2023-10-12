@@ -1,5 +1,3 @@
-import { variables } from "./variables.js"
-import { grid } from "./ball.js"
 import { variables, position } from "./variables.js"
 
 export const grid = document.querySelector('.grid')
@@ -28,5 +26,14 @@ export function moveUser() {
             position.currentPosition[0] += 10
         }
     }
+    if (position.currentPosition[0] >= variables.boardWidth - variables.padleWidth) {
+        position.currentPosition[0] = variables.boardWidth - variables.padleWidth - 2
+        console.log("2")
+    }
+    if (position.currentPosition[0] < 0) {
+        position.currentPosition[0] = 0
+        console.log("2")
+    }
+    console.log("1")
     drawUser()
 }

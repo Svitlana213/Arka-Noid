@@ -3,7 +3,7 @@ import { blocks, addBlocks } from "./blocks.js"
 import { drawBall } from "./ball.js"
 import { drawUser, moveUser } from "./user.js"
 import { animationId } from "./animation.js"
-import { stopGame } from "./time.js"
+import { stopGame, stopTime } from "./time.js"
 
 const scoreDisplay = document.querySelector('#score')
 const live = document.querySelector('#lives')
@@ -87,7 +87,9 @@ export function checkCollisions() {
         }
         if (variables.lives == 0) {
             variables.game_over = true
+            variables.game_start = false
             scoreDisplay.innerHTML = "Game over. Your score: " + variables.score
+            stopGame()
             document.removeEventListener('keydown', moveUser)
             pausebtn.hidden = true
             return
