@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Game</title>
     <link rel="stylesheet" href="/template/static/style.css">
+    <link href="https://fonts.cdnfonts.com/css/arcade-classic" rel="stylesheet">
 </head>
 
 <body>
@@ -15,28 +16,23 @@
         <div id="timer">Time: 00:00</div>
         <div id="level">Level: 1</div>
     </div>
-
     <div class="game">
         <div class="grid">
             <div class="allblocks"></div>
-            <!-- <button id="next_level" class="hidden">Next level</button> -->
         </div>
     </div>
-
     <div class="buttons">
         <button id="pause">Start</button>
         <button id="reset">Restart</button>
     </div>
 
+    <script src="/template/js/blocks.js" type="module"></script>
     <script src="/template/js/variables.js" type="module"></script>
     <script src="/template/js/script.js" type="module"></script>
-    <script src="/template/js/blocks.js" type="module"></script>
-    <script src="/template/js/direction.js" type="module"></script>
     <script src="/template/js/ball.js" type="module"></script>
     <script src="/template/js/user.js" type="module"></script>
     <script src="/template/js/checkCollisions.js" type="module"></script>
     <script src="/template/js/animation.js" type="module"></script>
-
 </body>
 
 </html>

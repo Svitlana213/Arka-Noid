@@ -3,7 +3,8 @@ import { blocks, addBlocks } from "./blocks.js"
 import { drawBall } from "./ball.js"
 import { drawUser, moveUser } from "./user.js"
 import { animationId } from "./animation.js"
-import { stopGame, stopTime } from "./time.js"
+import { stopGame } from "./time.js"
+
 
 const scoreDisplay = document.querySelector('#score')
 const live = document.querySelector('#lives')
@@ -15,6 +16,7 @@ export function checkCollisions() {
     for (let i = 0; i < blocks[variables.currentLevel].length; i++) {
         const block = blocks[variables.currentLevel][i]
         const { bottomLeft, topLeft, topRight } = block
+
         if (
             position.ballCurrentPosition[1] <= topRight[1] &&
             position.ballCurrentPosition[1] + variables.ballDiameter >= bottomLeft[1] &&
@@ -23,8 +25,9 @@ export function checkCollisions() {
         ) {
             // Collided with the block from the top or bottom
             variables.yDirection = -variables.yDirection
-            block.hit = true; // Add a property to the block object to keep track if it has been hit
+            block.hit = true // Add a property to the block object to keep track if it has been hit
         }
+
         if (block.hit) {
             // If the block was hit, remove it from the array and update the score
             const allBlocks = document.querySelectorAll('.block')
@@ -32,11 +35,13 @@ export function checkCollisions() {
             blocks[variables.currentLevel].splice(i, 1)
             variables.score++
             scoreDisplay.innerHTML = 'Score: ' + variables.score
+
             // next level
             if (blocks[variables.currentLevel].length === 0) {
                 stopGame()
                 pause.innerHTML = "Next level"
                 variables.currentLevel++
+
                 if (variables.currentLevel + 1 > blocks.length) {
                     variables.game_over = true
                     variables.game_start = false
@@ -51,6 +56,7 @@ export function checkCollisions() {
                     drawBall()
                     drawUser()
                 }
+                
                 document.removeEventListener('keydown', moveUser)
                 return
             }
@@ -65,6 +71,7 @@ export function checkCollisions() {
         position.ballCurrentPosition[1] = variables.boardHeight - variables.ballDiameter
         variables.yDirection = -variables.yDirection // Invert ball's vertical direction
     }
+
     //check for user collisions
     if (
         (position.ballCurrentPosition[0] + variables.ballDiameter >= position.currentPosition[0] && position.ballCurrentPosition[0] <= position.currentPosition[0] + variables.blockWidth) &&
@@ -73,6 +80,7 @@ export function checkCollisions() {
         position.ballCurrentPosition[1] = position.currentPosition[1] + variables.padleHeight
         variables.yDirection = -variables.yDirection // Invert ball's vertical direction
     }
+
     //check for game over
     if (position.ballCurrentPosition[1] <= 0) {
         clearInterval(variables.timerId)
@@ -89,9 +97,9 @@ export function checkCollisions() {
             variables.game_over = true
             variables.game_start = false
             scoreDisplay.innerHTML = "Game over. Your score: " + variables.score
+            pausebtn.hidden = true
             stopGame()
             document.removeEventListener('keydown', moveUser)
-            pausebtn.hidden = true
             return
         }
     }

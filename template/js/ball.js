@@ -1,11 +1,6 @@
-import { variables } from "./variables.js"
-import { checkCollisions } from "./script.js"
 import { variables, position } from "./variables.js"
 import { checkCollisions } from "./checkCollisions.js"
 import { grid } from "./user.js"
-
-
-// export let ballCurrentPosition = [...ballStart]
 
 //draw the ball
 export function drawBall() {
@@ -26,4 +21,4 @@ export function moveBall() {
         drawBall()
         checkCollisions()
     }
-} 
+}  

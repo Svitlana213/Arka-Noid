@@ -1,4 +1,5 @@
 export const variables = {
+    
     blockWidth: 100,
     blockHeight: 20,
     padleWidth: 90,
